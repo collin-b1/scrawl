@@ -41,6 +41,10 @@ const Canvas = (props: CanvasProps) => {
     setTool(e.target.value);
   };
 
+  const changeBrushSize = e => {
+    setBrushSize(e.target.value);
+  };
+
   const clearCanvas = () => {
     if (canvasRef.current) {
       let ctx = canvasRef.current.getContext("2d");
@@ -106,10 +110,12 @@ const Canvas = (props: CanvasProps) => {
         width="500"
         height="500"
         className="bg-white mx-auto mb-2"
+        aria-label="Game Canvas"
       ></canvas>
       <Palette
         changeColor={changeColor}
         changeTool={changeTool}
+        changeBrushSize={changeBrushSize}
         clearCanvas={clearCanvas}
       />
     </div>

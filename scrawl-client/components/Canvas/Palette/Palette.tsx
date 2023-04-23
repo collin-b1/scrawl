@@ -1,55 +1,79 @@
-import { MouseEventHandler } from "react";
+import { ChangeEventHandler, MouseEventHandler } from "react";
 
 interface PaletteProps {
   changeColor: MouseEventHandler;
   changeTool: MouseEventHandler;
+  changeBrushSize: ChangeEventHandler;
   clearCanvas: MouseEventHandler;
 }
 
-const Palette = ({ changeColor, changeTool, clearCanvas }: PaletteProps) => {
+const Palette = ({
+  changeColor,
+  changeTool,
+  changeBrushSize,
+  clearCanvas,
+}: PaletteProps) => {
   return (
     <div className="flex w-full">
       <button
         value={0}
+        aria-label="Black"
         onClick={changeColor}
         className="w-8 h-8 bg-black"
       ></button>
       <button
         value={1}
+        aria-label="Gray"
         onClick={changeColor}
         className="w-8 h-8 bg-gray-500"
       ></button>
       <button
         value={2}
+        aria-label="White"
         onClick={changeColor}
         className="w-8 h-8 bg-white text-black"
       ></button>
       <button
         value={3}
+        aria-label="Red"
         onClick={changeColor}
         className="w-8 h-8 bg-red-500"
       ></button>
       <button
         value={4}
+        aria-label="Orange"
         onClick={changeColor}
         className="w-8 h-8 bg-orange-500"
       ></button>
       <button
         value={5}
+        aria-label="Yellow"
         onClick={changeColor}
         className="w-8 h-8 bg-yellow-500"
       ></button>
       <button
         value={6}
+        aria-label="Green"
         onClick={changeColor}
         className="w-8 h-8 bg-green-500"
       ></button>
       <button
         value={7}
+        aria-label="Blue"
         onClick={changeColor}
         className="w-8 h-8 bg-blue-500"
       ></button>
-      <span className="flex-1" />
+      <div className="flex h-8 px-4">
+        <input
+          type="range"
+          min={10}
+          max={50}
+          defaultValue={10}
+          step={10}
+          onChange={changeBrushSize}
+          className="w-32"
+        ></input>
+      </div>
       <button value={0} onClick={changeTool} className="w-8 h-8">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -58,6 +82,7 @@ const Palette = ({ changeColor, changeTool, clearCanvas }: PaletteProps) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="w-full h-full"
+          aria-label="Pencil Tool"
         >
           <path
             strokeLinecap="round"
@@ -66,7 +91,7 @@ const Palette = ({ changeColor, changeTool, clearCanvas }: PaletteProps) => {
           />
         </svg>
       </button>
-      <button value={0} onClick={clearCanvas} className="w-8 h-8">
+      <button onClick={clearCanvas} className="w-8 h-8">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -74,6 +99,7 @@ const Palette = ({ changeColor, changeTool, clearCanvas }: PaletteProps) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="w-full h-full"
+          aria-label="Clear Canvas"
         >
           <path
             strokeLinecap="round"

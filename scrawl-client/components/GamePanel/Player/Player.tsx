@@ -19,6 +19,7 @@ const Player = (props: PlayerTypes) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="h-4 mr-2"
+          aria-label="Admin"
         >
           <path
             strokeLinecap="round"
@@ -34,6 +35,7 @@ const Player = (props: PlayerTypes) => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="h-4 mr-2"
+          aria-label="User"
         >
           <path
             strokeLinecap="round"
@@ -45,7 +47,7 @@ const Player = (props: PlayerTypes) => {
 
       <div className="">
         <h2 className="font-bold">{playerData.displayName}</h2>
-        <p className="text-sm">Score: {playerData.score}</p>
+        <p className="text-sm">{`Score: ${playerData.score}`}</p>
       </div>
     </div>
   );

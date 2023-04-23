@@ -43,6 +43,7 @@ export default function Room() {
             strokeWidth={1.5}
             stroke="currentColor"
             className="w-auto h-full"
+            aria-label="Exit Room"
           >
             <path
               strokeLinecap="round"

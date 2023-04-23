@@ -37,6 +37,7 @@ export default function Home() {
               placeholder="123456"
               className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-slate-700 leading-tight focus:outline-none"
               name="roomCode"
+              id="roomCode"
             />
             <label
               htmlFor="displayName"
@@ -51,6 +52,7 @@ export default function Home() {
               onChange={e => setDisplayName(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-slate-700 leading-tight focus:outline-none"
               name="displayName"
+              id="displayName"
             />
             <Link href={`/room/${roomCode}`}>
               <input
