@@ -7,7 +7,7 @@ interface GamePanelProps {
 
 const GamePanel = ({ players }: GamePanelProps) => {
   return (
-    <div className="rounded md:w-64 mr-2 p-2 bg-slate-700 sm:overflow-scroll">
+    <div className="flex-1 rounded mr-2 p-2 bg-slate-700 sm:overflow-scroll">
       <h2 className="font-bold text-center mb-2">Players ({players.length})</h2>
       {players.map(player => (
         <Player

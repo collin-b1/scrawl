@@ -56,7 +56,7 @@ export default function Room() {
           <span className="font-bold">{code}</span>
         </h2>
       </header>
-      <main className="flex flex-col flex-wrap md:mx-auto md:flex-row md:p-2">
+      <main className="flex flex-col h-full max-h-screen-lg w-full max-w-screen-xl md:mx-auto md:flex-row md:p-2">
         <GamePanel players={testPlayers} />
         <Canvas />
         <Chat />

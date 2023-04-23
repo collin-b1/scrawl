@@ -1,3 +1,4 @@
+import { Brush } from "@/types/canvas";
 import {
   ChangeEventHandler,
   MouseEventHandler,
@@ -6,6 +7,7 @@ import {
 } from "react";
 
 interface PaletteProps {
+  defaultBrush: Brush;
   changeColor: (color: number) => void;
   changeTool: (tool: string) => void;
   changeBrushSize: (size: number) => void;
@@ -13,6 +15,7 @@ interface PaletteProps {
 }
 
 const Palette = ({
+  defaultBrush,
   changeColor,
   changeTool,
   changeBrushSize,
@@ -89,10 +92,10 @@ const Palette = ({
       <div className="flex h-8 px-4">
         <input
           type="range"
-          min={10}
+          min={5}
           max={50}
-          defaultValue={10}
-          step={10}
+          defaultValue={defaultBrush.size}
+          step={15}
           onChange={handleSizeChange}
           className="w-32"
         ></input>

@@ -27,7 +27,7 @@ const Colors: { [key: number]: string } = {
 const Canvas = (props: CanvasProps) => {
   const [brush, setBrush] = useState<Brush>({
     color: 0,
-    size: 10,
+    size: 5,
     tool: "pencil",
   });
   const [brushPos, handleBrushPos] = useMousePosition();
@@ -112,20 +112,22 @@ const Canvas = (props: CanvasProps) => {
   };
 
   return (
-    <div className="rounded mx-2 md:ml-0 md:p-2 max-w-3xl bg-slate-700">
+    <div className="flex flex-col align-center rounded mx-2 md:ml-0 md:p-2 max-w-3xl bg-slate-700">
+      <h1 className="flex-1 font-bold">_ _ _ _ _ _</h1>
       <canvas
         ref={canvasRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        width="500"
-        height="400"
+        width="600"
+        height="500"
         id="gamecanvas"
         className="bg-white mb-2"
         aria-label="Game Canvas"
       ></canvas>
       <Palette
+        defaultBrush={brush}
         changeColor={changeColor}
         changeTool={changeTool}
         changeBrushSize={changeBrushSize}
