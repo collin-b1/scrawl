@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, MouseEvent } from "react";
 
 interface MousePositionTypes {
   x: number;
@@ -7,13 +7,13 @@ interface MousePositionTypes {
 
 const useMousePosition = (
   global: boolean = false
-): [MousePositionTypes, (event: MouseEvent) => void] => {
+): [MousePositionTypes, (event: MouseEvent<HTMLElement>) => void] => {
   const [mouseCoords, setMouseCoords] = useState<MousePositionTypes>({
     x: 0,
     y: 0,
   });
 
-  const handleCursorMovement = (event: MouseEvent): void => {
+  const handleCursorMovement = (event: MouseEvent<HTMLElement>): void => {
     //@ts-ignore
     let rect = event.target.getBoundingClientRect();
     setMouseCoords({
@@ -21,15 +21,6 @@ const useMousePosition = (
       y: event.clientY - rect.top,
     });
   };
-
-  useEffect(() => {
-    if (global) {
-      window.addEventListener("mousemove", handleCursorMovement);
-      return () => {
-        window.removeEventListener("mousemove", handleCursorMovement);
-      };
-    }
-  }, [global]);
 
   return [mouseCoords, handleCursorMovement];
 };

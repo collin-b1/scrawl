@@ -1,6 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  MouseEvent,
+  ChangeEvent,
+  MouseEventHandler,
+  ChangeEventHandler,
+} from "react";
 import Palette from "./Palette/Palette";
 import useMousePosition from "@/hooks/useMousePosition";
+import type { Brush, BrushPos } from "@/types/canvas";
 
 type CanvasProps = {};
 
@@ -16,11 +25,13 @@ const Colors: { [key: number]: string } = {
 };
 
 const Canvas = (props: CanvasProps) => {
-  const [color, setColor] = useState<number>(0);
-  const [brushSize, setBrushSize] = useState<number>(10);
+  const [brush, setBrush] = useState<Brush>({
+    color: 0,
+    size: 10,
+    tool: "pencil",
+  });
   const [brushPos, handleBrushPos] = useMousePosition();
-  const [prevBrushPos, setPrevBrushPos] = useState({ x: 0, y: 0 });
-  const [tool, setTool] = useState(0);
+  const [prevBrushPos, setPrevBrushPos] = useState<BrushPos>({ x: 0, y: 0 });
   const [drawing, setDrawing] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -29,66 +40,67 @@ const Canvas = (props: CanvasProps) => {
   useEffect(() => {
     if (canvasRef.current) {
       canvasCtxRef.current = canvasRef.current.getContext("2d");
-      let ctx = canvasCtxRef.current;
     }
   }, []);
 
-  const changeColor = e => {
-    setColor(e.target.value);
+  const changeColor = (color: number): void => {
+    setBrush({ ...brush, color });
   };
 
-  const changeTool = e => {
-    setTool(e.target.value);
+  const changeTool = (tool: string): void => {
+    setBrush({ ...brush, tool });
   };
 
-  const changeBrushSize = e => {
-    setBrushSize(e.target.value);
+  const changeBrushSize = (size: number): void => {
+    setBrush({ ...brush, size });
   };
 
-  const clearCanvas = () => {
+  const clearCanvas = (): void => {
     if (canvasRef.current) {
       let ctx = canvasRef.current.getContext("2d");
       ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
   };
 
-  const handleMouseDown = e => {
+  const handleMouseDown: MouseEventHandler = (
+    e: MouseEvent<HTMLCanvasElement>
+  ) => {
     handleBrushPos(e);
     setPrevBrushPos({ x: brushPos.x, y: brushPos.y });
-    if (tool === 0) {
+    if (brush.tool === "pencil") {
       setDrawing(true);
     } else {
     }
   };
 
-  const handleMouseMove = e => {
+  const handleMouseMove: MouseEventHandler = (
+    e: MouseEvent<HTMLCanvasElement>
+  ) => {
     handleBrushPos(e);
     if (drawing) {
-      //console.log(brushPos.x, brushPos.y);
       stroke(brushPos.x, brushPos.y);
     }
   };
 
-  const handleMouseUp = e => {
+  const handleMouseUp: MouseEventHandler = (
+    e: MouseEvent<HTMLCanvasElement>
+  ) => {
     setDrawing(false);
   };
-
-  const floodFill = (
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    color: number
-  ) => {};
 
   const stroke = (x: number, y: number) => {
     let ctx = canvasCtxRef.current;
 
     if (ctx) {
       ctx.globalCompositeOperation = "source-over";
+
+      // Filter to enforce pixelated look
+      ctx.filter = `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="f" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer></filter></svg>#f')`;
       ctx.imageSmoothingEnabled = false;
       ctx.lineJoin = ctx.lineCap = "round";
-      ctx.lineWidth = brushSize;
-      ctx.strokeStyle = Colors[color];
+      ctx.lineWidth = brush.size;
+      ctx.strokeStyle = Colors[brush.color];
+
       ctx.beginPath();
       ctx.moveTo(prevBrushPos.x, prevBrushPos.y);
       ctx.lineTo(x, y);
@@ -100,7 +112,7 @@ const Canvas = (props: CanvasProps) => {
   };
 
   return (
-    <div className="rounded flex-1 mx-2 md:ml-0 md:p-2 w-1/2 max-w-3xl bg-slate-700">
+    <div className="rounded mx-2 md:ml-0 md:p-2 max-w-3xl bg-slate-700">
       <canvas
         ref={canvasRef}
         onMouseDown={handleMouseDown}
@@ -108,8 +120,9 @@ const Canvas = (props: CanvasProps) => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         width="500"
-        height="500"
-        className="bg-white mx-auto mb-2"
+        height="400"
+        id="gamecanvas"
+        className="bg-white mb-2"
         aria-label="Game Canvas"
       ></canvas>
       <Palette
