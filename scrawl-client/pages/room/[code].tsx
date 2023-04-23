@@ -1,5 +1,33 @@
+import Canvas from "@/components/Canvas/Canvas";
+import Chat from "@/components/Chat/Chat";
+import GamePanel from "@/components/GamePanel/GamePanel";
+import { PlayerList } from "@/components/GamePanel/Player/PlayerTypes";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
+const testPlayers: PlayerList = [
+  {
+    id: 0,
+    displayName: "joe",
+    score: 1423,
+  },
+  {
+    id: 1,
+    displayName: "sally",
+    score: 100,
+  },
+  {
+    id: 2,
+    displayName: "buddy",
+    score: 3200,
+    admin: true,
+  },
+  {
+    id: 3,
+    displayName: "bobbert",
+    score: 0,
+  },
+];
 
 export default function Room() {
   const router = useRouter();
@@ -27,37 +55,12 @@ export default function Room() {
           <span className="font-bold">{code}</span>
         </h2>
       </header>
-      <main className="flex flex-col md:mx-auto md:flex-row md:p-2">
-        <div className="p-2 bg-slate-700 hidden">
-          <h2 className="font-bold">Users</h2>
-          <ul>
-            <li>User 1</li>
-            <li>User 2</li>
-            <li>User 3</li>
-            <li>User 4</li>
-            <li>User 5</li>
-          </ul>
-        </div>
-        <div className="rounded flex-1 md:m-2 md:mr-0 md:p-2 max-w-3xl bg-slate-700">
-          <canvas
-            width="500"
-            height="500"
-            className="bg-white mx-auto"
-          ></canvas>
-        </div>
-        <div className="rounded mt-2 md:m-2 p-2 bg-slate-700 text-center">
-          <ul className="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-2 w-full md:w-16 md:flex-col">
-            <button className="w-full h-8 bg-red-500"></button>
-            <button className="w-full h-8 bg-orange-500"></button>
-            <button className="w-full h-8 bg-yellow-500"></button>
-            <button className="w-full h-8 bg-green-500"></button>
-            <button className="w-full h-8 bg-blue-500"></button>
-            <button className="w-full h-8 bg-white text-black"></button>
-            <button className="w-full h-8 bg-gray-500"></button>
-            <button className="w-full h-8 bg-black"></button>
-          </ul>
-        </div>
+      <main className="flex flex-col flex-wrap md:mx-auto md:flex-row md:p-2">
+        <GamePanel players={testPlayers} />
+        <Canvas />
+        <Chat />
       </main>
+      <footer></footer>
     </div>
   );
 }
