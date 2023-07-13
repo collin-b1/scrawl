@@ -14,3 +14,9 @@ export type Stroke = {
   endPos: BrushPos;
   brush: Brush;
 };
+
+export type RGBColor = {
+  r: number;
+  g: number;
+  b: number;
+};

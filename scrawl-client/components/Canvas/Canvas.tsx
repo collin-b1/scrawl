@@ -9,16 +9,7 @@ import Palette from "./Palette/Palette";
 import useMousePosition from "@/hooks/useMousePosition";
 import type { Brush, BrushPos, Stroke } from "@/types/canvas";
 import { Socket } from "socket.io-client";
-
-type CanvasProps = {
-  socket?: Socket | null; // Because of offline mode, socket is an optional parameter
-};
-
-type RGBColor = {
-  r: number;
-  g: number;
-  b: number;
-};
+import { CanvasEvent } from "@/types/event";
 
 const Colors: { [key: number]: string } = {
   0: "#000000",
@@ -40,7 +31,6 @@ const Sizes: { [key: number]: number } = {
 };
 
 const DURATION = 10;
-
 const throttle = (function () {
   let timeout: any = undefined;
   return function throttle(callback: () => void) {
@@ -65,6 +55,10 @@ function throttlify(callback: (arg0: any) => void) {
     });
   };
 }
+
+type CanvasProps = {
+  socket?: Socket | null; // Because of offline mode, socket is an optional parameter
+};
 
 const Canvas = (props: CanvasProps) => {
   const [brush, setBrush] = useState<Brush>({
@@ -127,15 +121,28 @@ const Canvas = (props: CanvasProps) => {
     setBrush({ ...brush, size });
   };
 
-  const clearCanvas = (received?: boolean): void => {
+  /**
+   * This function is what runs when the clear button is pressed.
+   * This is so that the data from the onClick event doesn't
+   * get passed into the eventReceived parameter, which oddly enough
+   * doesn't create an error when given the wrong type...
+   */
+  const handleClearCanvas = () => {
+    clearCanvas(false);
+  };
+
+  /**
+   *
+   * @param eventReceived Whether or not the event comes from another socket. Defaults to false
+   * @returns
+   */
+  const clearCanvas = (eventReceived: boolean = false): void => {
     if (canvasRef.current) {
       let ctx = canvasRef.current.getContext("2d");
       ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
-      console.log("2");
-      if (received || !props.socket) return;
-      console.log("1");
-      props.socket.emit("clear");
+      if (eventReceived || !props.socket) return;
+      props.socket.emit(CanvasEvent.Clear);
     }
   };
 
@@ -155,7 +162,6 @@ const Canvas = (props: CanvasProps) => {
             .current!.getImageData(brushPos.x, brushPos.y, 1, 1)
             .data.slice(0, 3)
         );
-        //console.log(fillColor);
         floodFill(brushPos.x, brushPos.y, [0, 0, 0], "");
       }
     }
@@ -174,11 +180,16 @@ const Canvas = (props: CanvasProps) => {
   const handleMouseUp: MouseEventHandler = (
     e: MouseEvent<HTMLCanvasElement>
   ) => {
+    if (drawing) {
+      // This makes sure that if a user clicks the canvas without moving it will still draw.
+      if (prevBrushPos.x === brushPos.x && prevBrushPos.y === brushPos.y) {
+        stroke({ startPos: brushPos, endPos: brushPos, brush }, false);
+      }
+    }
     setDrawing(false);
   };
 
-  const stroke = (data: Stroke, received?: boolean): void => {
-    //console.log("stroking...");
+  const stroke = (data: Stroke, eventReceived: boolean = false): void => {
     let ctx = canvasCtxRef.current;
     if (!ctx) return;
 
@@ -190,8 +201,8 @@ const Canvas = (props: CanvasProps) => {
     ctx.stroke();
     ctx.closePath();
 
-    if (received || !props.socket) return;
-    props.socket.emit("stroke", data);
+    if (eventReceived || !props.socket) return;
+    props.socket.emit(CanvasEvent.Stroke, data);
   };
 
   /**
@@ -229,7 +240,7 @@ const Canvas = (props: CanvasProps) => {
         changeColor={changeColor}
         changeTool={changeTool}
         changeBrushSize={changeBrushSize}
-        clearCanvas={clearCanvas}
+        clearCanvas={handleClearCanvas}
       />
     </div>
   );

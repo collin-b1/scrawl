@@ -2,6 +2,11 @@ import { NextApiRequest } from "next";
 import { Server as HTTPServer } from "http";
 import { Server as IOServer } from "socket.io";
 import NextApiResponseServerIO from "@/types/next";
+import { CanvasEvent, GameEvent } from "@/types/event";
+import { Room } from "@/types/game";
+import Player from "@/models/player";
+
+const rooms: Map<string, Room> = new Map<string, Room>();
 
 const SocketHandler = async (
   req: NextApiRequest,
@@ -17,17 +22,34 @@ const SocketHandler = async (
     io.on("connect", socket => {
       console.log(`Socket ${socket.id} connected.`);
 
-      socket.on("stroke", data => {
-        socket.broadcast.emit("stroke", data);
+      socket.on(CanvasEvent.Stroke, data => {
+        socket.broadcast.emit(CanvasEvent.Stroke, data);
       });
 
-      socket.on("clear", () => {
-        socket.broadcast.emit("clear");
+      socket.on(CanvasEvent.Clear, () => {
+        socket.broadcast.emit(CanvasEvent.Clear);
+      });
+
+      socket.on(GameEvent.JoinRoom, (code: string, name: string) => {
+        if (rooms.has(code)) {
+          let player = new Player(name);
+          socket.join(code);
+        }
+      });
+
+      socket.on(GameEvent.LeaveRoom, (code: string) => {
+        if (rooms.has(code)) {
+          socket.leave(code);
+        }
+      });
+
+      socket.on(GameEvent.CreateRoom, () => {
+        let code: string = "";
+        while (rooms.has(code) || code === "") {
+          code = Math.random().toString().slice(2, 8); // Random padded 6 digit number (as string)
+        }
       });
     });
-
-    //console.log(io);
-
     res.socket.server.io = io;
   }
   res.end();
