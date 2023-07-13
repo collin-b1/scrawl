@@ -4,6 +4,8 @@ import GamePanel from "@/components/GamePanel/GamePanel";
 import { PlayerList } from "@/components/GamePanel/Player/PlayerTypes";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { Socket, io } from "socket.io-client";
 
 const testPlayers: PlayerList = [
   {
@@ -30,8 +32,22 @@ const testPlayers: PlayerList = [
 ];
 
 export default function Room() {
+  const [socket, setSocket] = useState<Socket | null>(null);
+
   const router = useRouter();
   const { code } = router.query;
+
+  useEffect(() => {
+    console.log("Attempting socket connection...");
+    setSocket(io({ path: "/api/socket" }));
+  }, []);
+
+  if (socket) {
+    socket.on("connect", async () => {
+      console.log(`Connected as ${socket.id}.`);
+    });
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex w-full bg-slate-700 p-2">
@@ -58,7 +74,7 @@ export default function Room() {
       </header>
       <main className="flex flex-col h-full max-h-screen-lg w-full max-w-screen-xl md:mx-auto md:flex-row md:p-2">
         <GamePanel players={testPlayers} />
-        <Canvas />
+        <Canvas socket={socket} />
         <Chat />
       </main>
       <footer></footer>

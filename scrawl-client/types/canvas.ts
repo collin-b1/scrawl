@@ -8,3 +8,9 @@ export type Brush = {
   size: number;
   tool: string;
 };
+
+export type Stroke = {
+  startPos: BrushPos;
+  endPos: BrushPos;
+  brush: Brush;
+};
