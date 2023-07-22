@@ -2,6 +2,7 @@ import Canvas from "@/components/Canvas/Canvas";
 import Chat from "@/components/Chat/Chat";
 import GamePanel from "@/components/GamePanel/GamePanel";
 import { PlayerList } from "@/components/GamePanel/Player/PlayerTypes";
+import { GameStatus } from "@/lib/types/game";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ const testPlayers: PlayerList = [
 
 export default function Room() {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.CONFIG);
 
   const router = useRouter();
   const { code } = router.query;

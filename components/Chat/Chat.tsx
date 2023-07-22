@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/types/chat";
+import { ChatMessage } from "@/lib/chat";
 import { useState } from "react";
 
 const Chat = () => {

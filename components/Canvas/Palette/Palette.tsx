@@ -1,4 +1,4 @@
-import { Brush } from "@/types/canvas";
+import { Brush } from "@/lib/canvas";
 import PencilIcon from "./PencilIcon";
 import TrashIcon from "./TrashIcon";
 import {

@@ -6,6 +6,13 @@ export type Room = {
   players: Map<string, Player>;
 };
 
+export enum GameStatus {
+  CONFIG,
+  PLAY,
+  PAUSE,
+  END,
+}
+
 export type ChatMessage = {
   body: string;
   author: string;
@@ -16,3 +23,5 @@ export type ChatAlert = {
   body: string;
   timestamp: Date | null;
 };
+
+export default interface GameState {}

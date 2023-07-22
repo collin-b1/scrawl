@@ -7,9 +7,9 @@ import {
 } from "react";
 import Palette from "./Palette/Palette";
 import useMousePosition from "@/hooks/useMousePosition";
-import type { Brush, BrushPos, Stroke } from "@/types/canvas";
+import type { Brush, BrushPos, Stroke } from "@/lib/canvas";
 import { Socket } from "socket.io-client";
-import { CanvasEvent } from "@/types/event";
+import { CanvasEvent } from "@/lib/event";
 
 const Colors: { [key: number]: string } = {
   0: "#000000",
@@ -30,7 +30,7 @@ const Sizes: { [key: number]: number } = {
   4: 50,
 };
 
-const DURATION = 10;
+const DURATION = 5;
 const throttle = (function () {
   let timeout: any = undefined;
   return function throttle(callback: () => void) {
@@ -142,7 +142,7 @@ const Canvas = (props: CanvasProps) => {
       ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
       if (eventReceived || !props.socket) return;
-      props.socket.emit(CanvasEvent.Clear);
+      props.socket.emit(CanvasEvent.CLEAR);
     }
   };
 
@@ -202,7 +202,7 @@ const Canvas = (props: CanvasProps) => {
     ctx.closePath();
 
     if (eventReceived || !props.socket) return;
-    props.socket.emit(CanvasEvent.Stroke, data);
+    props.socket.emit(CanvasEvent.STROKE, data);
   };
 
   /**
